@@ -10,10 +10,11 @@ class Weblink extends atoum\test
     {
         $this
             ->given(
-                $givenHeader = '<http://google.fr>; rel="customer"'
+                $givenHeader = '<http://google.fr>; rel="customer"',
+                $sutClass = $this->testedClass->getClass()
             )
             ->when(
-                $sut = $this->testedClass->getClass()::fromHeaderString($givenHeader)
+                $sut = $sutClass::fromHeaderString($givenHeader)
             )
             ->then
                 ->variable($sut->getUrl())
@@ -28,10 +29,11 @@ class Weblink extends atoum\test
                 $givenWeblink = $this->newTestedInstance('https://www.yahoo.fr/search?foo=bar#anchor', 'Customer', ['title' => 'hello you', 'description' => 'customer description'])
             )
             ->and(
-                $givenHost = 'http://google.com'
+                $givenHost = 'http://google.com',
+                $sutClass = $this->testedClass->getClass()
             )
             ->when(
-                $sut = $this->testedClass->getClass()::fromWeblinkWithHost($givenWeblink, $givenHost)
+                $sut = $sutClass::fromWeblinkWithHost($givenWeblink, $givenHost)
             )
             ->then
                 ->variable($sut->getUrl())
@@ -53,10 +55,11 @@ class Weblink extends atoum\test
     {
         $this
             ->given(
-                $givenHeader = '<http://google.fr>; rel="customer"'
+                $givenHeader = '<http://google.fr>; rel="customer"',
+                $sutClass = $this->testedClass->getClass()
             )
             ->when(
-                $sut = $this->testedClass->getClass()::fromHeaderString($givenHeader)
+                $sut = $sutClass::fromHeaderString($givenHeader)
             )
             ->then
                 ->variable($sut->getRel())
@@ -68,10 +71,11 @@ class Weblink extends atoum\test
     {
         $this
             ->given(
-                $givenHeader = '<http://google.fr>; rel="customer"; title="my link";media="mobile"'
+                $givenHeader = '<http://google.fr>; rel="customer"; title="my link";media="mobile"',
+                $sutClass = $this->testedClass->getClass()
             )
             ->when(
-                $sut = $this->testedClass->getClass()::fromHeaderString($givenHeader)
+                $sut = $sutClass::fromHeaderString($givenHeader)
             )
             ->then
                 ->phpArray($sut->getAttributes())

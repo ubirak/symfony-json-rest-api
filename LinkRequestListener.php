@@ -35,7 +35,7 @@ class LinkRequestListener
      * This breaks those headers into Link headers following the format
      * http://tools.ietf.org/html/rfc2068#section-19.6.2.4
      */
-    private function parseWeblink(string $linkHeader)
+    private function parseWeblink($linkHeader)
     {
         $links = [];
 
