@@ -1,0 +1,32 @@
+{
+    "name": "rezzza/symfony-rest-api-json",
+    "homepage": "https://github.com/rezzza/symfony-rest-api-json",
+    "description": "Stuff to let symfony app support JSON rest api operation",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ReZzZa Team",
+            "email": "dev@verylastroom.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Rezzza\\SymfonyRestApiJson\\": "" }
+    },
+    "require": {
+        "symfony/http-kernel": "^2.8|^3.0",
+        "symfony/http-foundation": "^2.8|^3.0",
+        "symfony/debug": "^2.8|^3.0",
+        "jakeasmith/http_build_url": "^1.0"
+    },
+    "require-dev": {
+        "atoum/atoum": "^2.6",
+        "fzaninotto/faker": "^1.5",
+        "league/tactician-bundle": "^0.4.1",
+        "symfony/serializer": "^3.0",
+        "symfony/validator": "^3.0"
+    },
+    "suggest": {
+        "league/tactician-bundle": "Support for ValidatorMiddleware of TacticianBundle",
+        "symfony/serializer": "Support for ValidatorMiddleware of TacticianBundle"
+    }
+}
