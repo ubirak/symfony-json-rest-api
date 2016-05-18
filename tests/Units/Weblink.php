@@ -6,11 +6,13 @@ use mageekguy\atoum;
 
 class Weblink extends atoum\test
 {
-    public function test_it_parse_url()
+    /**
+     * @dataProvider validHeaders
+     */
+    public function test_it_parse_url($givenHeader, $expectedUrl)
     {
         $this
             ->given(
-                $givenHeader = '<http://google.fr>; rel="customer"',
                 $sutClass = $this->testedClass->getClass()
             )
             ->when(
@@ -18,8 +20,18 @@ class Weblink extends atoum\test
             )
             ->then
                 ->variable($sut->getUrl())
-                    ->isEqualTo('http://google.fr')
+                    ->isEqualTo($expectedUrl)
         ;
+    }
+
+    public function validHeaders()
+    {
+        return [
+            ['<http://google.fr>; rel="customer"', 'http://google.fr'],
+            ['<mailto:coucou@google.com>; rel="friend"', 'mailto:coucou@google.com'],
+            ['<tel:0666666666>; rel="contact"', 'tel:0666666666'],
+            ['<fax:0666666666>; rel="contact"', 'fax:0666666666'],
+        ];
     }
 
     public function test_it_replace_host()

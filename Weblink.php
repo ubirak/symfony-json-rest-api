@@ -4,6 +4,10 @@ namespace Rezzza\SymfonyRestApiJson;
 
 /**
  * Parse Weblink header according to the RFC https://tools.ietf.org/html/rfc5988#section-5.5
+ *
+ * We introduce a specific support to url with tel and fax scheme (see https://tools.ietf.org/html/rfc2806) 
+ * as FILTER_VALIDATE_URL does not handle it.
+ * But be aware that we don't validate the following phonenumber, it's your domain responsability
  */
 class Weblink
 {
@@ -24,7 +28,10 @@ class Weblink
 
     public function __construct($url, $rel = null, $attributes = [])
     {
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        $scheme = parse_url($url, PHP_URL_SCHEME);
+        $extendedSchemes = ['tel', 'fax'];
+
+        if (false === in_array($scheme, $extendedSchemes) && !filter_var($url, FILTER_VALIDATE_URL)) {
             throw new \LogicException(sprintf('"%s" is not a valid url', $url));
         }
 
