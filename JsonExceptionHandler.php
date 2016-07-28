@@ -64,6 +64,19 @@ class JsonExceptionHandler
             return new JsonResponse($payload + ['errors' => $violationsPayload], 406);
         }
 
+        if ($exception instanceof InvalidPayload) {
+            $violationsPayload = [];
+
+            foreach ($exception->getErrors() as $violation) {
+                $violationsPayload[] = [
+                    'parameter' => $violation['property'],
+                    'message' => $violation['message']
+                ];
+            }
+
+            return new JsonResponse($payload + ['errors' => $violationsPayload], 400);
+        }
+
         throw $exception;
     }
 }
