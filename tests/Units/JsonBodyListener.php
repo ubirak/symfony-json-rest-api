@@ -15,10 +15,10 @@ class JsonBodyListener extends atoum\test
             ->given(
                 $request = $this->requestWithContent($method, 'application/json', '{"foo": "bar"}'),
                 $mockEvent = $this->eventOccuredByRequest($request),
-                $sut = $this->newTestedInstance
+                $this->newTestedInstance($this->mockPayloadValidator())
             )
             ->when(
-                $sut->onKernelRequest($mockEvent)
+                $this->testedInstance->onKernelRequest($mockEvent)
             )
             ->then
                 ->phpArray($request->request->all())
@@ -47,10 +47,10 @@ class JsonBodyListener extends atoum\test
             ->given(
                 $request = $this->requestWithContent($method, 'application/json', '{"foo": "bar"}'),
                 $mockEvent = $this->eventOccuredByRequest($request),
-                $sut = $this->newTestedInstance
+                $this->newTestedInstance($this->mockPayloadValidator())
             )
             ->when(
-                $sut->onKernelRequest($mockEvent)
+                $this->testedInstance->onKernelRequest($mockEvent)
             )
             ->then
                 ->phpArray($request->request->all())
@@ -75,10 +75,10 @@ class JsonBodyListener extends atoum\test
             ->given(
                 $request = $this->requestWithContent('POST', $contentType, '{"foo": "bar"}'),
                 $mockEvent = $this->eventOccuredByRequest($request),
-                $sut = $this->newTestedInstance
+                $this->newTestedInstance($this->mockPayloadValidator())
             )
             ->when(
-                $sut->onKernelRequest($mockEvent)
+                $this->testedInstance->onKernelRequest($mockEvent)
             )
             ->then
                 ->phpArray($request->request->all())
@@ -103,10 +103,10 @@ class JsonBodyListener extends atoum\test
             ->given(
                 $request = $this->requestWithContent('POST', 'application/json', null),
                 $mockEvent = $this->eventOccuredByRequest($request),
-                $sut = $this->newTestedInstance
+                $this->newTestedInstance($this->mockPayloadValidator())
             )
             ->when(
-                $sut->onKernelRequest($mockEvent)
+                $this->testedInstance->onKernelRequest($mockEvent)
             )
             ->then
                 ->phpArray($request->request->all())
@@ -122,10 +122,32 @@ class JsonBodyListener extends atoum\test
                 $mockEvent = $this->eventOccuredByRequest($request)
             )
             ->exception(function () use ($mockEvent) {
-                $sut = $this->newTestedInstance;
-                $sut->onKernelRequest($mockEvent);
+                $this->newTestedInstance($this->mockPayloadValidator());
+                $this->testedInstance->onKernelRequest($mockEvent);
             })
             ->isInstanceOf('Symfony\Component\HttpKernel\Exception\BadRequestHttpException')
+        ;
+    }
+
+    public function test_it_try_to_validate_payload_when_jsonSchema_is_present()
+    {
+        $this
+            ->given(
+                $request = $this->requestWithContent('POST', 'application/json', '{"foo": "bar"}'),
+                $request->attributes->set('_jsonSchema', ['request' => 'mySchema.json']),
+                $mockEvent = $this->eventOccuredByRequest($request),
+                $mockPayloadValidator = $this->mockPayloadValidator(),
+                $this->calling($mockPayloadValidator)->validate = null,
+                $this->newTestedInstance($mockPayloadValidator)
+            )
+            ->when(
+                $this->testedInstance->onKernelRequest($mockEvent)
+            )
+            ->then
+                ->mock($mockPayloadValidator)
+                    ->call('validate')
+                    ->withArguments('{"foo": "bar"}', 'mySchema.json')
+                    ->once()
         ;
     }
 
@@ -149,5 +171,12 @@ class JsonBodyListener extends atoum\test
         $this->calling($mockEvent)->getRequest = $request;
 
         return $mockEvent;
+    }
+
+    private function mockPayloadValidator()
+    {
+        $this->mockGenerator->orphanize('__construct');
+
+        return new \mock\Rezzza\SymfonyRestApiJson\PayloadValidator;
     }
 }

@@ -11,6 +11,13 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 class JsonBodyListener
 {
+    private $payloadValidator;
+
+    public function __construct(PayloadValidator $payloadValidator)
+    {
+        $this->payloadValidator = $payloadValidator;
+    }
+
     public function onKernelRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
@@ -39,6 +46,11 @@ class JsonBodyListener
 
             if (!is_array($data)) {
                 throw new BadRequestHttpException('Invalid ' . $format . ' message received');
+            }
+
+            $jsonSchema = $request->get('_jsonSchema');
+            if (is_array($jsonSchema) && array_key_exists('request', $jsonSchema)) {
+                $this->payloadValidator->validate($content, $jsonSchema['request']);
             }
 
             $request->request = new ParameterBag($data);
