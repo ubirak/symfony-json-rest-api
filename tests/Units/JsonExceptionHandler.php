@@ -185,6 +185,31 @@ class JsonExceptionHandler extends atoum\test
         ;
     }
 
+    public function test_it_supports_invalid_payload_exception()
+    {
+        $this
+            ->given(
+                $this->newTestedInstance(false, 'token', new \Rezzza\SymfonyRestApiJson\ExceptionHttpCodeMap),
+                $exception = new \mock\Rezzza\SymfonyRestApiJson\InvalidPayload,
+                $this->calling($exception)->getErrors = [
+                    ['property' => 'username', 'message' => 'Username invalid'],
+                    ['property' => 'password', 'message' => 'password invalid']
+                ]
+            )
+            ->when(
+                $response = $this->testedInstance->handleExceptionOfRequest(
+                    $exception,
+                    $this->requestWithHeaders()
+                )
+            )
+            ->then
+                ->string($response->getContent())
+                    ->isEqualTo('{"errors":[{"parameter":"username","message":"Username invalid"},{"parameter":"password","message":"password invalid"}]}')
+                ->integer($response->getStatusCode())
+                    ->isEqualTo(400)
+        ;
+    }
+
     private function requestWithHeaders(array $headers = [])
     {
         return \Symfony\Component\HttpFoundation\Request::create('/test.json', 'GET', [], [], [], $headers, null);
