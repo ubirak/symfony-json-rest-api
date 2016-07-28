@@ -2,52 +2,31 @@
 
 namespace Rezzza\SymfonyRestApiJson;
 
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 use League\Tactician\Bundle\Middleware\InvalidCommandException;
 
+/**
+ * Directly translate supported exception into unified JSON response
+ */
 class JsonExceptionHandler
 {
-    private $debug;
-
-    private $showExceptionToken;
-
     private $exceptionHttpCodeMap;
 
-    public function __construct($debug, $showExceptionToken, ExceptionHttpCodeMap $exceptionHttpCodeMap)
+    public function __construct(ExceptionHttpCodeMap $exceptionHttpCodeMap)
     {
-        $this->debug = (bool) $debug;
-        $this->showExceptionToken = $showExceptionToken;
         $this->exceptionHttpCodeMap = $exceptionHttpCodeMap;
     }
 
-    /**
-     * Please note we cannot typehint $exception because of Flatten exception
-     */
-    public function handleExceptionOfRequest($exception, Request $request)
+    public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        $exceptionIsFlatten = $exception instanceof FlattenException;
-        if (false === ($exception instanceof \Exception || $exceptionIsFlatten)) {
-            return;
-        }
-
-        $payload = [];
-
-        if ($this->debug || $this->showExceptionToken === $request->headers->get('X-Show-Exception-Token')) {
-            $exceptionFlatten = $exceptionIsFlatten ? $exception : FlattenException::create($exception);
-            $payload = ['exception' => $exceptionFlatten->toArray()];
-        }
-
-        if ($exceptionIsFlatten) {
-            return new JsonResponse($payload);
-        }
-
+        $exception = $event->getException();
         $resolvedHttpCode = $this->exceptionHttpCodeMap->resolveHttpCodeFromException($exception);
+        $response = null;
 
         if (null !== $resolvedHttpCode) {
-            return new JsonResponse($payload + ['errors' => ['message' => $exception->getMessage()]], $resolvedHttpCode);
+            $response =new JsonResponse(['errors' => ['message' => $exception->getMessage()]], $resolvedHttpCode);
         }
 
         if ($exception instanceof InvalidCommandException) {
@@ -61,7 +40,7 @@ class JsonExceptionHandler
                 ];
             }
 
-            return new JsonResponse($payload + ['errors' => $violationsPayload], 406);
+            $response = new JsonResponse(['errors' => $violationsPayload], 400);
         }
 
         if ($exception instanceof InvalidPayload) {
@@ -74,9 +53,15 @@ class JsonExceptionHandler
                 ];
             }
 
-            return new JsonResponse($payload + ['errors' => $violationsPayload], 400);
+            $response = new JsonResponse(['errors' => $violationsPayload], 400);
         }
 
-        throw $exception;
+        if (null === $response) {
+            // If no support found, we let JsonExceptionController show it
+            throw $exception;
+        }
+
+        // Will stop the propagation according to symfony doc
+        $event->setResponse($response);
     }
 }
