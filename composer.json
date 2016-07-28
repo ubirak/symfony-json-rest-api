@@ -16,7 +16,8 @@
         "symfony/http-kernel": "^2.8|^3.0",
         "symfony/http-foundation": "^2.8|^3.0",
         "symfony/debug": "^2.8|^3.0",
-        "jakeasmith/http_build_url": "^1.0"
+        "jakeasmith/http_build_url": "^1.0",
+        "justinrainbow/json-schema": "^2.0"
     },
     "require-dev": {
         "atoum/atoum": "^2.6",
