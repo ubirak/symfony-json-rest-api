@@ -17,12 +17,12 @@ class PayloadValidator extends atoum
                 $this->newTestedInstance($validator, $refResolver)
             )
             ->when(
-                $this->testedInstance->validate('{"json"}', __DIR__.'/../Fixtures/mySchema.json')
+                $this->testedInstance->validate('"json"', __DIR__.'/../Fixtures/mySchema.json')
             )
             ->then
                 ->mock($validator)
                     ->call('check')
-                    ->withArguments('{"json"}', 'resolvedJsonSchema')
+                    ->withArguments('json', 'resolvedJsonSchema')
                     ->once()
         ;
     }
@@ -34,7 +34,7 @@ class PayloadValidator extends atoum
                 $this->newTestedInstance($this->mockJsonSchemaValidator(), $this->mockJsonSchemaRefResolver())
             )
             ->exception(function () {
-                $this->testedInstance->validate('{"json"}', 'hello.json');
+                $this->testedInstance->validate('"json"', 'hello.json');
             })
                 ->isInstanceOf(\UnexpectedValueException::class)
         ;
@@ -53,7 +53,7 @@ class PayloadValidator extends atoum
                 $this->newTestedInstance($validator, $refResolver)
             )
             ->exception(function () {
-                $this->testedInstance->validate('{"json"}', __DIR__.'/../Fixtures/mySchema.json');
+                $this->testedInstance->validate('"json"', __DIR__.'/../Fixtures/mySchema.json');
             })
                 ->isInstanceOf(\Rezzza\SymfonyRestApiJson\InvalidPayload::class)
                 ->phpArray($this->exception->getErrors())

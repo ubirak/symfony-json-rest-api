@@ -24,7 +24,7 @@ class PayloadValidator
         }
 
         $this->delegateValidator->check(
-            $payload,
+            json_decode($payload),
             $this->refResolver->resolve('file://' . realpath($jsonSchemaFilename))
         );
 
