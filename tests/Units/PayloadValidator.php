@@ -14,7 +14,8 @@ class PayloadValidator extends atoum
                 $this->calling($validator)->check = null,
                 $refResolver = $this->mockJsonSchemaRefResolver(),
                 $this->calling($refResolver)->resolve = 'resolvedJsonSchema',
-                $this->newTestedInstance($validator, $refResolver)
+                $jsonSchemaTools = $this->mockJsonSchemaTools($validator, $refResolver),
+                $this->newTestedInstance($jsonSchemaTools)
             )
             ->when(
                 $this->testedInstance->validate('"json"', __DIR__.'/../Fixtures/mySchema.json')
@@ -31,7 +32,8 @@ class PayloadValidator extends atoum
     {
         $this
             ->given(
-                $this->newTestedInstance($this->mockJsonSchemaValidator(), $this->mockJsonSchemaRefResolver())
+                $jsonSchemaTools = $this->mockJsonSchemaTools(),
+                $this->newTestedInstance($jsonSchemaTools)
             )
             ->exception(function () {
                 $this->testedInstance->validate('"json"', 'hello.json');
@@ -50,7 +52,8 @@ class PayloadValidator extends atoum
                 $this->calling($validator)->getErrors = ['error1', 'error2'],
                 $refResolver = $this->mockJsonSchemaRefResolver(),
                 $this->calling($refResolver)->resolve = 'resolvedJsonSchema',
-                $this->newTestedInstance($validator, $refResolver)
+                $jsonSchemaTools = $this->mockJsonSchemaTools($validator, $refResolver),
+                $this->newTestedInstance($jsonSchemaTools)
             )
             ->exception(function () {
                 $this->testedInstance->validate('"json"', __DIR__.'/../Fixtures/mySchema.json');
@@ -73,5 +76,15 @@ class PayloadValidator extends atoum
         $this->mockGenerator->orphanize('__construct');
 
         return new \mock\JsonSchema\RefResolver;
+    }
+
+    private function mockJsonSchemaTools($validator = null, $refResolver = null)
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $mock = new \mock\Rezzza\SymfonyRestApiJson\JsonSchemaTools;
+        $this->calling($mock)->createValidator = $validator;
+        $this->calling($mock)->createRefResolver = $refResolver;
+
+        return $mock;
     }
 }

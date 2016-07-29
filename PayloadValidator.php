@@ -2,19 +2,13 @@
 
 namespace Rezzza\SymfonyRestApiJson;
 
-use JsonSchema\Validator;
-use JsonSchema\RefResolver;
-
 class PayloadValidator
 {
-    private $delegateValidator;
+    private $jsonSchemaTools;
 
-    private $refResolver;
-
-    public function __construct(Validator $delegateValidator, RefResolver $refResolver)
+    public function __construct(JsonSchemaTools $jsonSchemaTools)
     {
-        $this->delegateValidator = $delegateValidator;
-        $this->refResolver = $refResolver;
+        $this->jsonSchemaTools = $jsonSchemaTools;
     }
 
     public function validate($payload, $jsonSchemaFilename)
@@ -23,13 +17,16 @@ class PayloadValidator
             throw new \UnexpectedValueException(sprintf('Cannot validate payload through "%s" json schema. File does not exist.', $jsonSchemaFilename));
         }
 
-        $this->delegateValidator->check(
+        $delegateValidator = $this->jsonSchemaTools->createValidator();
+        $refResolver = $this->jsonSchemaTools->createRefResolver();
+
+        $delegateValidator->check(
             json_decode($payload),
-            $this->refResolver->resolve('file://' . realpath($jsonSchemaFilename))
+            $refResolver->resolve('file://' . realpath($jsonSchemaFilename))
         );
 
-        if (!$this->delegateValidator->isValid()) {
-            throw InvalidPayload::withErrors($payload, $jsonSchemaFilename, $this->delegateValidator->getErrors());
+        if (!$delegateValidator->isValid()) {
+            throw InvalidPayload::withErrors($payload, $jsonSchemaFilename, $delegateValidator->getErrors());
         }
     }
 }
