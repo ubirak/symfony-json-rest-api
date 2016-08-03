@@ -6,7 +6,7 @@ use mageekguy\atoum;
 
 class JsonExceptionHandler extends atoum\test
 {
-    public function test_uncaught_exception_should_be_thrown()
+    public function test_uncaught_exception_should_not_alter_event_response()
     {
         $this
             ->given(
@@ -14,11 +14,13 @@ class JsonExceptionHandler extends atoum\test
                     new \Rezzza\SymfonyRestApiJson\ExceptionHttpCodeMap
                 )
             )
-            ->exception(function () {
-                $this->testedInstance->onKernelException($this->dispatchException(new \Exception('boum')));
-            })
-                ->hasMessage('boum')
-                ->isInstanceOf('Exception')
+            ->when(
+                $event = $this->dispatchException(new \Exception('boum')),
+                $this->testedInstance->onKernelException($event)
+            )
+            ->then
+                ->variable($event->getResponse())
+                    ->isNull()
         ;
     }
 

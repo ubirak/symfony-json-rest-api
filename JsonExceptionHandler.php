@@ -56,12 +56,9 @@ class JsonExceptionHandler
             $response = new JsonResponse(['errors' => $violationsPayload], 400);
         }
 
-        if (null === $response) {
-            // If no support found, we let JsonExceptionController show it
-            throw $exception;
+        if (null !== $response) {
+            // Will stop the propagation according to symfony doc
+            $event->setResponse($response);
         }
-
-        // Will stop the propagation according to symfony doc
-        $event->setResponse($response);
     }
 }
