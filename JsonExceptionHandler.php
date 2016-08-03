@@ -26,7 +26,7 @@ class JsonExceptionHandler
         $response = null;
 
         if (null !== $resolvedHttpCode) {
-            $response =new JsonResponse(['errors' => ['message' => $exception->getMessage()]], $resolvedHttpCode);
+            $response = new JsonResponse(['errors' => ['message' => $exception->getMessage()]], $resolvedHttpCode);
         }
 
         if ($exception instanceof InvalidCommandException) {
