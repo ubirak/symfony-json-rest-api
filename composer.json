@@ -10,7 +10,10 @@
         }
     ],
     "autoload": {
-        "psr-4": { "Rezzza\\SymfonyRestApiJson\\": "" }
+        "psr-4": { "Rezzza\\SymfonyRestApiJson\\": "src" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Rezzza\\SymfonyRestApiJson\\Tests\\": "tests" }
     },
     "require": {
         "symfony/http-kernel": "^2.8|^3.0",
