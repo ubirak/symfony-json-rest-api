@@ -1,0 +1,4 @@
+parameters:
+    show_exception_token: s3s4m3
+    exception_http_code_map:
+        'Rezzza\SymfonyRestApiJson\Tests\Fixtures\MyOtherException': 409
