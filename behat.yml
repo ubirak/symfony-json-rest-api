@@ -1,0 +1,12 @@
+default:
+    suites:
+        web:
+            contexts:
+                - Rezzza\RestApiBehatExtension\RestApiContext
+                - Rezzza\RestApiBehatExtension\Json\JsonContext
+
+    extensions:
+        Rezzza\RestApiBehatExtension\Extension:
+            rest:
+                base_url: http://localhost:4224
+                store_response: true

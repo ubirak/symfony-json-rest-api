@@ -6,8 +6,11 @@ php:
     - 7.0
 
 before_script:
+    - echo 'always_populate_raw_post_data = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - phpenv config-rm xdebug.ini
     - composer install --prefer-dist --optimize-autoloader
+    - php -S 127.0.0.1:4224 -t "$TRAVIS_BUILD_DIR/testapp" &> /dev/null &
 
 script:
     - vendor/bin/atoum -ulr
+    - vendor/bin/behat -f progress
