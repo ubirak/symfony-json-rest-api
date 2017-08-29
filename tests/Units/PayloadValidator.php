@@ -13,7 +13,7 @@ class PayloadValidator extends atoum
                 $validator = $this->mockJsonSchemaValidator(),
                 $this->calling($validator)->check = null,
                 $refResolver = $this->mockJsonSchemaRefResolver(),
-                $this->calling($refResolver)->resolve = 'resolvedJsonSchema',
+                $this->calling($refResolver)->resolveRef = 'resolvedJsonSchema',
                 $jsonSchemaTools = $this->mockJsonSchemaTools($validator, $refResolver),
                 $this->newTestedInstance($jsonSchemaTools)
             )
@@ -75,7 +75,7 @@ class PayloadValidator extends atoum
     {
         $this->mockGenerator->orphanize('__construct');
 
-        return new \mock\JsonSchema\RefResolver;
+        return new \mock\JsonSchema\JsonStorage();
     }
 
     private function mockJsonSchemaTools($validator = null, $refResolver = null)
@@ -83,7 +83,7 @@ class PayloadValidator extends atoum
         $this->mockGenerator->orphanize('__construct');
         $mock = new \mock\Rezzza\SymfonyRestApiJson\JsonSchemaTools;
         $this->calling($mock)->createValidator = $validator;
-        $this->calling($mock)->createRefResolver = $refResolver;
+        $this->calling($mock)->createSchemaStorage = $refResolver;
 
         return $mock;
     }
