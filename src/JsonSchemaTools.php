@@ -3,11 +3,11 @@
 namespace Rezzza\SymfonyRestApiJson;
 
 use JsonSchema\Validator;
-use JsonSchema\RefResolver;
+use JsonSchema\SchemaStorage;
 use JsonSchema\Uri;
 
 /**
- * Used as factory because JsonSchema\Validator and JsonSchema\RefResolver are not stateless
+ * Used as factory because JsonSchema\Validator and JsonSchema\SchemaStorage are not stateless
  */
 class JsonSchemaTools
 {
@@ -16,10 +16,11 @@ class JsonSchemaTools
         return new Validator;
     }
 
-    public function createRefResolver()
+    public function createSchemaStorage()
     {
-        return new RefResolver(
-            new Uri\UriRetriever(), new Uri\UriResolver()
+        return new SchemaStorage(
+            new Uri\UriRetriever(),
+            new Uri\UriResolver()
         );
     }
 }

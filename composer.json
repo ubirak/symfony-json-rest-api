@@ -20,16 +20,22 @@
         "symfony/http-foundation": "^2.8|^3.0",
         "symfony/debug": "^2.8|^3.0",
         "jakeasmith/http_build_url": "^1.0",
-        "justinrainbow/json-schema": "^2.0"
+        "justinrainbow/json-schema": ">=3.0 <6.0"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": {
+           "*": "dist"
+        }
     },
     "require-dev": {
-        "atoum/atoum": "^2.6",
+        "atoum/atoum": "^3.1",
         "fzaninotto/faker": "^1.5",
         "league/tactician-bundle": "^0.4.1",
         "symfony/serializer": "^3.0",
         "symfony/validator": "^3.0",
         "symfony/framework-bundle": "^3.0",
-        "rezzza/rest-api-behat-extension": "^5.0",
+        "rezzza/rest-api-behat-extension": "^6.0",
         "php-http/curl-client": "^1.5",
         "guzzlehttp/psr7": "^1.3"
     },

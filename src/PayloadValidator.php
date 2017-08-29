@@ -18,11 +18,12 @@ class PayloadValidator
         }
 
         $delegateValidator = $this->jsonSchemaTools->createValidator();
-        $refResolver = $this->jsonSchemaTools->createRefResolver();
+        $refResolver = $this->jsonSchemaTools->createSchemaStorage();
 
+        $data = json_decode($payload);
         $delegateValidator->check(
-            json_decode($payload),
-            $refResolver->resolve('file://' . realpath($jsonSchemaFilename))
+            $data,
+            $refResolver->resolveRef('file://' . realpath($jsonSchemaFilename))
         );
 
         if (!$delegateValidator->isValid()) {
