@@ -34,7 +34,8 @@ Feature: Handle json payload
                 "name": "Bond"
             }
             """
-        Then the JSON node "name" should not exist
+        Then the response status code should be 415
+        And the JSON node "name" should not exist
 
     Scenario: Send invalid data
         Given I set "Content-Type" header equal to "application/json"

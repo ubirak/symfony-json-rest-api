@@ -2,9 +2,11 @@
 
 namespace Rezzza\SymfonyRestApiJson;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException;
 
 /**
  * Allow to pass JSON raw as request content.
@@ -31,6 +33,10 @@ class JsonBodyListener
             : $request->getFormat($contentType);
 
         if ($format !== 'json') {
+            if ($this->requestFormatViolateSupportedFormats($format, $request->attributes->get('_supportedFormats', false))) {
+                throw new UnsupportedMediaTypeHttpException("Request body format '$format' not supported");
+            }
+
             return;
         }
 
@@ -50,5 +56,13 @@ class JsonBodyListener
         }
 
         $request->request = new ParameterBag($data);
+    }
+
+    private function requestFormatViolateSupportedFormats($format, $supportedFormats)
+    {
+        return null !== $format
+            && false !== $supportedFormats
+            && false === in_array($format, $supportedFormats, true)
+        ;
     }
 }

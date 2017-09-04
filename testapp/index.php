@@ -33,7 +33,10 @@ class AppKernel extends Kernel
     {
         // kernel is a service that points to this class
         // optional 3rd argument is the route name
-        $routes->add('/echo', 'kernel:echoAction')->setDefault('_jsonSchema', ['request' => 'schema.json']);
+        $routes->add('/echo', 'kernel:echoAction')
+            ->setDefault('_jsonSchema', ['request' => 'schema.json'])
+            ->setDefault('_supportedFormats', ['json'])
+        ;
         $routes->add('/exception', 'kernel:exceptionAction');
     }
 
