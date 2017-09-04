@@ -10,8 +10,6 @@ More information on documentation:
 [fr] http://docs.atoum.org/fr/latest/lancement_des_tests.html#fichier-de-configuration
 */
 
-use \mageekguy\atoum;
-
 $report = $script->addDefaultReport();
 
 // This will add a green or red logo after each run depending on its status.
