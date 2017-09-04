@@ -7,7 +7,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * Allow to pass JSON raw as request content
+ * Allow to pass JSON raw as request content.
  */
 class JsonBodyListener
 {
@@ -41,7 +41,7 @@ class JsonBodyListener
 
         $data = @json_decode($content, true);
         if (!is_array($data)) {
-            throw new BadRequestHttpException('Invalid ' . $format . ' message received');
+            throw new BadRequestHttpException('Invalid '.$format.' message received');
         }
 
         $jsonSchema = $request->get('_jsonSchema');
