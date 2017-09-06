@@ -60,8 +60,7 @@ class JsonBodyListener
 
     private function requestFormatViolateSupportedFormats($format, $supportedFormats)
     {
-        return null !== $format
-            && false !== $supportedFormats
+        return false !== $supportedFormats
             && false === in_array($format, $supportedFormats, true)
         ;
     }

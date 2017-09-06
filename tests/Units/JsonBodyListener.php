@@ -151,6 +151,35 @@ class JsonBodyListener extends atoum\test
         ;
     }
 
+    /**
+     * @dataProvider supportedFormats
+     */
+    public function test_it_check_request_format_when_supported_format_contains_json($contentType)
+    {
+        $this
+            ->given(
+                $request = $this->requestWithContent('POST', $contentType, '{}'),
+                $request->attributes->set('_supportedFormats', ['json']),
+                $mockEvent = $this->eventOccuredByRequest($request)
+            )
+            ->exception(function () use ($mockEvent) {
+                $this->newTestedInstance($this->mockPayloadValidator());
+                $this->testedInstance->onKernelRequest($mockEvent);
+            })
+            ->isInstanceOf('\Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException')
+        ;
+    }
+
+    protected function supportedFormats()
+    {
+        return [
+            'Request has a known content type' => ['application/xml'],
+            'Request has an unknown content type' => ['application/jsond'],
+            'Request has an empty content type' => [''],
+            'Request has a null content type' => [null],
+        ];
+    }
+
     private function requestWithContent($method, $contentType, $content)
     {
         return \Symfony\Component\HttpFoundation\Request::create(
