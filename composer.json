@@ -17,9 +17,9 @@
         "psr-4": { "Rezzza\\SymfonyRestApiJson\\Tests\\": "tests" }
     },
     "require": {
-        "symfony/http-kernel": "^2.8|^3.0",
-        "symfony/http-foundation": "^2.8|^3.0",
-        "symfony/debug": "^2.8|^3.0",
+        "symfony/http-kernel": "^2.8|^3.0|^4.0",
+        "symfony/http-foundation": "^2.8|^3.0|^4.0",
+        "symfony/debug": "^2.8|^3.0|^4.0",
         "jakeasmith/http_build_url": "^1.0",
         "justinrainbow/json-schema": ">=3.0 <6.0"
     },
