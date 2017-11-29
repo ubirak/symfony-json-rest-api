@@ -9,8 +9,9 @@ php:
 
 env:
   matrix:
+    - COMPOSER_PREFER=""
     - COMPOSER_PREFER="--prefer-stable"
-    - COMPOSER_PREFER="--prefer-lowest"
+    - COMPOSER_PREFER="--prefer-stable --prefer-lowest"
 
 matrix:
   allow_failures:
